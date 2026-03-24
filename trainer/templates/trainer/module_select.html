@@ -1,0 +1,228 @@
+{% extends 'trainer/base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #064e3b; 
+        background-image: 
+            linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    
+    body::before {
+        content: "";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 140vw;
+        height: 140vh;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(6, 78, 59, 1) 70%);
+        z-index: -1;
+    }
+
+    .module-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px;
+    }
+
+    .header-text {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .header-text h2 {
+        font-size: 3rem;
+        font-weight: 900;
+        color: #ecfdf5; 
+        margin: 0;
+        text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .header-text p {
+        color: #a7f3d0;
+        font-size: 1.2rem;
+        margin-top: 10px;
+        font-weight: 500;
+    }
+
+    /* 2. THE MISSION CARDS */
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        width: 100%;
+        max-width: 1100px;
+    }
+
+    .module-card {
+        position: relative;
+        height: 350px;
+        background: rgba(2, 44, 34, 0.8); 
+        backdrop-filter: blur(10px);
+        border-radius: 32px;
+        overflow: hidden;
+        text-decoration: none;
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .module-card:hover {
+        transform: translateY(-15px);
+        border-color: #34d399;
+        box-shadow: 0 0 40px rgba(52, 211, 153, 0.3);
+    }
+
+    /* Card Front */
+    .card-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.5s;
+    }
+
+    .icon-box {
+        width: 90px;
+        height: 90px;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        margin-bottom: 20px;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+
+    .card-content h3 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .level-badge {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: #34d399;
+        border: 1px solid #34d399;
+        padding: 4px 14px;
+        border-radius: 99px;
+        margin-top: 12px;
+        text-transform: uppercase;
+    }
+
+    .card-info {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #10b981, #065f46);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        text-align: center;
+        opacity: 0;
+        transform: scale(0.9);
+        transition: 0.4s ease;
+    }
+
+    .module-card:hover .card-info {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .card-info p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    .launch-btn {
+        background: #ffffff;
+        color: #065f46;
+        padding: 14px 35px;
+        border-radius: 16px;
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 1.5px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .back-btn {
+        margin-top: 60px;
+        color: #a7f3d0;
+        text-decoration: none;
+        font-weight: 700;
+        padding: 10px 25px;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        transition: 0.3s;
+    }
+
+    .back-btn:hover {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: #34d399;
+        color: #ffffff;
+    }
+</style>
+
+<div class="module-wrapper">
+    <div class="header-text">
+        <h2>CATEGORY SELECTION</h2>
+        <p>CHOOSE THE MODULE TO PLAY</p>
+    </div>
+
+    <div class="module-grid">
+        <a href="{% url 'instructions' 'scam' %}" class="module-card">
+            <div class="card-content">
+                <div class="icon-box">🛡️</div>
+                <h3>Scam Recognition</h3>
+                <span class="level-badge">Module 1</span>
+            </div>
+            <div class="card-info">
+                <p>Deconstruct financial fraud tactics and learn the psychological triggers used in social engineering.</p>
+                <div class="launch-btn">START MISSION</div>
+            </div>
+        </a>
+
+        <a href="{% url 'instructions' 'phishing' %}" class="module-card">
+            <div class="card-content">
+                <div class="icon-box">🎣</div>
+                <h3>Phishing Identification</h3>
+                <span class="level-badge">Module 2</span>
+            </div>
+            <div class="card-info">
+                <p>Identify malicious links, spoofed headers, and data stealing techniques.</p>
+                <div class="launch-btn">START MISSION</div>
+            </div>
+        </a>
+
+        <a href="{% url 'instructions' 'disinfo' %}" class="module-card">
+            <div class="card-content">
+                <div class="icon-box">🔎</div>
+                <h3>Disinfo Detection</h3>
+                <span class="level-badge">Module 3</span>
+            </div>
+            <div class="card-info">
+                <p>Detect artificial narratives, state-sponsored campaigns, and media manipulation strategies in your daily media consumption.</p>
+                <div class="launch-btn">START MISSION</div>
+            </div>
+        </a>
+    </div>
+
+    <a href="{% url 'index' %}" class="back-btn">RETURN TO DASHBOARD</a>
+</div>
+{% endblock %}

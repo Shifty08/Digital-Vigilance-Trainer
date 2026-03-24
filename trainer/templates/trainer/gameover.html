@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+        :root {
+            --primary-green: #10b981;
+            --deep-forest: #064e3b;
+            --text-light: #ecfdf5;
+        }
+
+        html, body {
+            height: 100%; margin: 0; background-color: var(--deep-forest);
+            font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center;
+        }
+
+        .final-deck {
+            width: 90vw; max-width: 600px; background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--primary-green); border-radius: 20px;
+            padding: 50px; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .final-title { font-size: 3rem; font-weight: 900; margin-bottom: 10px; color: white; }
+        
+        .final-score-circle {
+            width: 180px; height: 180px; border: 5px solid var(--primary-green);
+            border-radius: 50%; margin: 30px auto;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(16, 185, 129, 0.1); box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+        }
+
+        .score-val { font-size: 4rem; font-weight: 900; color: var(--primary-green); line-height: 1; }
+        .score-max { font-size: 1.2rem; opacity: 0.6; color: white; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 15px; margin-top: 40px; }
+        
+        .btn {
+            padding: 18px; border-radius: 10px; font-weight: 800; text-transform: uppercase;
+            text-decoration: none; font-size: 1.1rem; transition: 0.2s;
+        }
+        .btn-primary { background: var(--primary-green); color: white; }
+        .btn-secondary { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; }
+        
+        .btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="final-deck">
+        <h1 class="final-title">MISSION COMPLETE</h1>
+        <p style="color: var(--primary-green); letter-spacing: 2px;">VIGILANCE ANALYSIS FINALIZED</p>
+
+        <div class="final-score-circle">
+            <span class="score-val">{{ score }}</span>
+            <span style="color: var(--primary-green); font-weight: 800; font-size: 0.9rem;">TOTAL PTS</span>
+        </div>
+
+        <div class="btn-group">
+            <a href="{% url 'play_game' category %}" class="btn btn-primary">Re-Run Simulation</a>
+            <a href="{% url 'index' %}" class="btn btn-secondary">Exit to Terminal</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+{% extends 'trainer/base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --cyber-yellow: #facc15;
+        --accent-blue: #3b82f6;
+        --accent-amber: #f59e0b;
+        --rank-s: #ef4444; 
+        --rank-a: #10b981; 
+        --rank-b: #3b82f6;
+    }
+
+    .profile-wrapper {
+        max-width: 1100px;
+        margin: 60px auto;
+        padding: 0 20px;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+
+    .hero-section {
+        background: white;
+        border-radius: 30px;
+        padding: 40px;
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: var(--text-dark);
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: var(--cyber-yellow);
+        border: 4px solid #f1f5f9;
+    }
+
+    .hero-text h2 {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin: 0;
+        color: var(--text-dark);
+        letter-spacing: -1px;
+    }
+
+    .hero-text p {
+        color: var(--text-muted);
+        margin: 5px 0 0;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+    }
+
+
+    .stats-header {
+        margin-bottom: 25px;
+        border-left: 6px solid var(--accent-amber);
+        padding-left: 20px;
+        margin-top: 40px;
+    }
+
+    .stats-header h3 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--text-dark);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .module-title {
+        font-size: 0.75rem;
+        font-weight: 900;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .stat-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .best-score {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--text-dark);
+        line-height: 1;
+    }
+
+    .best-score span {
+        font-size: 0.9rem;
+        color: var(--accent-amber);
+        margin-left: 5px;
+    }
+
+    .stat-sub {
+        text-align: right;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .stat-sub b {
+        color: var(--text-dark);
+        display: block;
+        font-size: 1.1rem;
+    }
+
+    .rank-legend {
+        margin-top: 50px;
+        background: #f8fafc;
+        border-radius: 24px;
+        padding: 30px;
+        border: 1px dashed #cbd5e1;
+    }
+
+    .legend-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .legend-item {
+        background: white;
+        padding: 15px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .rank-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        color: white;
+    }
+
+    .rank-info b { display: block; color: var(--text-dark); font-size: 0.9rem; }
+    .rank-info span { font-size: 0.75rem; color: var(--text-muted); }
+
+    .stat-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 6px;
+        background: var(--accent-amber);
+        width: 100%;
+        opacity: 0.3;
+    }
+
+    .details-footer {
+        margin-top: 50px;
+        padding: 20px;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="hero-section">
+        <div class="profile-avatar">👤</div>
+        <div class="hero-text">
+            <h2>{{ user.username|upper }}</h2>
+            <p>Verified Operative • Joined {{ user.date_joined|date:"M Y" }}</p>
+        </div>
+    </div>
+
+    <div class="stats-header">
+        <h3>Combat Records</h3>
+    </div>
+
+    <div class="stats-grid">
+        {% for cat, data in stats.items %}
+        <div class="stat-card">
+            <span class="module-title">{{ cat }}</span>
+            <div class="stat-main">
+                <div class="best-score">{{ data.best }}<span>pts</span></div>
+                <div class="stat-sub">
+                    AVG: <b>{{ data.average|floatformat:1 }}</b>
+                    PLAYED: <b>{{ data.total }}</b>
+                </div>
+            </div>
+            <div class="stat-bar"></div>
+        </div>
+        {% empty %}
+        <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; grid-column: 1/-1;">
+            <p style="color: var(--text-muted); font-weight: 700;">NO MISSION DATA ENCRYPTED YET.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="rank-legend">
+        <div class="stats-header" style="margin-top: 0; border-left-color: var(--text-dark);">
+            <h3>Ranking System</h3>
+        </div>
+        <div class="legend-grid">
+            <div class="legend-item">
+                <div class="rank-badge" style="background: var(--rank-s);">S</div>
+                <div class="rank-info"><b>1,300 - 1,500</b><span>ELITE OPERATIVE</span></div>
+            </div>
+            <div class="legend-item">
+                <div class="rank-badge" style="background: var(--rank-a);">A</div>
+                <div class="rank-info"><b>1,000 - 1,299</b><span>GUARDIAN</span></div>
+            </div>
+            <div class="legend-item">
+                <div class="rank-badge" style="background: var(--rank-b);">B</div>
+                <div class="rank-info"><b>700 - 999</b><span>ANALYST</span></div>
+            </div>
+            <div class="legend-item">
+                <div class="rank-badge" style="background: var(--text-muted);">C</div>
+                <div class="rank-info"><b>Below 700</b><span>RECRUIT</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="details-footer">
+        <span><b>EMAIL:</b> {{ user.email|default:"HIDDEN" }}</span>
+        <span><b>SYSTEM_STATUS:</b> ACTIVE</span>
+    </div>
+</div>
+{% endblock %}

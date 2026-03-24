@@ -1,0 +1,139 @@
+{% extends 'trainer/base.html' %}
+
+{% block content %}
+<style>
+    .dashboard-wrapper {
+        max-width: 1100px;
+        margin: 60px auto;
+        padding: 0 20px;
+    }
+
+    .welcome-section {
+        margin-bottom: 50px;
+        border-left: 6px solid var(--grad-end);
+        padding-left: 25px;
+    }
+
+    .welcome-section h2 {
+        font-size: 2.2rem;
+        font-weight: 900;
+        margin: 0;
+        color: var(--text-dark);
+    }
+
+    .welcome-section p {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-top: 5px;
+    }
+
+
+    .game-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 30px;
+        padding: 60px 30px;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid rgba(0,0,0,0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+
+    .action-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.15);
+    }
+
+
+    .play-card { border-bottom: 8px solid #22c55e; }
+    .leaderboard-card { border-bottom: 8px solid #3b82f6; }
+    .profile-card { border-bottom: 8px solid #f59e0b; }
+
+    .icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin-bottom: 25px;
+        background: #f8fafc;
+        transition: 0.3s;
+    }
+
+    .action-card:hover .icon-box {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .action-card h3 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--text-dark);
+        letter-spacing: -0.5px;
+    }
+
+    .action-card p {
+        color: #64748b;
+        margin-top: 15px;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+   
+    .status-pill {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #f1f5f9;
+        color: #64748b;
+        padding: 4px 12px;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+</style>
+
+<div class="dashboard-wrapper">
+    <div class="welcome-section">
+        <h2>Hi, {{ user.username }}!</h2>
+        <p>Ready to level up your digital defense skills?</p>
+    </div>
+
+    <div class="game-grid">
+        <a href="{% url 'module_select' %}" class="action-card play-card">
+            <span class="status-pill">NEW CATEGORIES</span>
+            <div class="icon-box" style="color: #22c55e; background: #f0fdf4;">🎮</div>
+            <h3>PLAY</h3>
+            <p>Start a new simulation and test your vigilance skills.</p>
+        </a>
+
+        <a href="{% url 'leaderboard' %}" class="action-card leaderboard-card">
+            <span class="status-pill">GLOBAL</span>
+            <div class="icon-box" style="color: #3b82f6; background: #eff6ff;">🏆</div>
+            <h3>LEADERBOARD</h3>
+            <p>See how you rank against other defenders worldwide.</p>
+        </a>
+
+        <a href="{% url 'profile' %}" class="action-card profile-card">
+            <span class="status-pill">{{ user.username }}</span>
+            <div class="icon-box" style="color: #f59e0b; background: #fffbeb;">👤</div>
+            <h3>PROFILE</h3>
+            <p>View your achievements and personal stats.</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

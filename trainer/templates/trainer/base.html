@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigilance Learning Portal</title>
+    <style>
+        :root {
+            --grad-start: #7dd3fc;
+            --grad-end: #2563eb;
+            --bg-slate: #f1f5f9;
+            --text-dark: #0f172a;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-slate);
+            color: var(--text-dark);
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        nav {
+            padding: 1rem 8%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--grad-start), var(--grad-end));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-logo:hover {
+            opacity: 0.8;
+        }
+
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--grad-end);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            display: inline-block;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'index' %}" class="nav-logo">Digital Vigilance Trainer</a>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'index' %}" style="color: gray;">Home</a>
+                <a href="{% url 'logout' %}" style="color: #ef4444;">Sign Out</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}" class="btn-gradient">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="container" style="padding: 2rem 8%;">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

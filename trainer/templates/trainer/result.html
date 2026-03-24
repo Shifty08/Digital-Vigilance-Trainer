@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Feedback</title>
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --deep-forest: #064e3b;
+            --danger-red: #e11d48;
+            --text-light: #ecfdf5;
+        }
+
+        html, body {
+            height: 100%; margin: 0; overflow: hidden;
+            background-color: var(--deep-forest);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .result-wrapper {
+            width: 98vw; max-width: 1300px; height: 96vh;
+            display: flex; flex-direction: column;
+        }
+
+        
+        .status-header {
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px 12px 0 0;
+            border: 2px solid transparent;
+        }
+
+        .header-correct { background: rgba(16, 185, 129, 0.1); border-color: var(--primary-green); }
+        .header-wrong { background: rgba(225, 29, 72, 0.1); border-color: var(--danger-red); }
+
+        .result-title { font-size: 2.2rem; font-weight: 900; margin: 0; text-transform: uppercase; letter-spacing: 4px; }
+        .title-correct { color: var(--primary-green); }
+        .title-wrong { color: var(--danger-red); }
+        .pace-note { color: white; font-weight: bold; font-size: 1.1rem; opacity: 0.9; }
+
+        
+        .feedback-deck {
+            flex: 1; 
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 1px solid rgba(16, 185, 129, 0.2);
+            border-right: 1px solid rgba(16, 185, 129, 0.2);
+            display: flex; 
+            overflow: hidden; 
+        }
+
+        
+        .evidence-pane {
+            flex: 1;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .review-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Right side: The Intel & Scores */
+        .intel-pane {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+
+        .score-box {
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .score-row {
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 700;
+            margin: 5px 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .intel-report h3 {
+            color: var(--primary-green);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .intel-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: white;
+            margin: 0;
+        }
+
+        /* 3. NAVIGATION */
+        .nav-footer {
+            padding: 20px; background: rgba(0,0,0,0.8);
+            border-radius: 0 0 12px 12px; text-align: center;
+        }
+
+        .btn-next {
+            padding: 20px 100px; background: var(--primary-green);
+            color: white; text-decoration: none; border-radius: 8px;
+            font-size: 1.5rem; font-weight: 900; text-transform: uppercase;
+            display: inline-block; transition: 0.2s;
+        }
+        .btn-next:hover { filter: brightness(1.1); }
+    </style>
+</head>
+<body>
+    <div class="result-wrapper">
+        <div class="status-header {% if is_correct %}header-correct{% else %}header-wrong{% endif %}">
+            <h1 class="result-title {% if is_correct %}title-correct{% else %}title-wrong{% endif %}">
+                {% if is_correct %}MISSION SUCCESS{% else %}THREAT DETECTED{% endif %}
+            </h1>
+            <div class="pace-note">{{ pace_note }}</div>
+        </div>
+
+        <div class="feedback-deck">
+            <div class="evidence-pane">
+                {% if image_url %}
+                    <img src="{{ image_url }}" class="review-image">
+                {% else %}
+                    <div style="color: #4b5563;">[ IMAGE_DATA_NULL ]</div>
+                {% endif %}
+            </div>
+
+            <div class="intel-pane">
+                <div class="score-box">
+                    <div class="score-row">ROUND POINTS: {{ round_score }}</div>
+                    <div class="score-row">TOTAL SCORE: {{ request.session.score }}</div>
+                </div>
+
+                <div class="intel-report">
+                    <h3>Intelligence Analysis</h3>
+                    <p class="intel-text">{{ explanation }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-footer">
+            <a href="{% url 'play_game' category %}" class="btn-next">Next Round</a>
+        </div>
+    </div>
+
+    <script>
+    
+    history.pushState(null, null, location.href);
+
+    
+    window.onpopstate = function () {
+        history.go(1);
+    };
+</script>
+
+</body>
+</html>

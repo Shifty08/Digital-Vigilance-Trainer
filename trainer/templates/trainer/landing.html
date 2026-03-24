@@ -1,0 +1,72 @@
+{% extends 'trainer/base.html' %}
+{% block content %}
+<style>
+    .hero { text-align: center; padding: 60px 0; }
+    
+    .hero h1 { 
+        font-size: 3.5rem; font-weight: 900; margin-bottom: 15px;
+        color: var(--text-dark);
+    }
+
+    .module-grid {
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px; margin-top: 40px;
+    }
+
+    .module-box {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 24px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+        transition: 0.3s ease;
+        text-align: center;
+    }
+
+    .module-box:hover {
+        transform: translateY(-8px);
+        border-color: var(--grad-start);
+        box-shadow: 0 20px 30px rgba(37, 99, 235, 0.08);
+    }
+
+    .icon-circle {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 1.5rem;
+    }
+
+    .module-box h3 { color: var(--grad-end); font-size: 1.4rem; margin-bottom: 15px; }
+    .module-box p { color: #64748b; font-size: 1rem; line-height: 1.6; }
+
+    
+</style>
+
+<div class="hero">
+    <h1>Master Digital Vigilance</h1>
+    <p style="color: #64748b; font-size: 1.2rem;"> A gamified web application to train your reflexes in high-pressure scenarios and master the art of threat detection.</p>
+    
+    <div class="module-grid">
+        <div class="module-box">
+            <div class="icon-circle">🛡️</div>
+            <h3>Scam Recognition</h3>
+            <p>Deconstruct financial fraud tactics and learn the psychological triggers used in social engineering.</p>
+        </div>
+
+        <div class="module-box">
+            <div class="icon-circle">🎣</div>
+            <h3>Phishing Identification</h3>
+            <p>Identify malicious links, spoofed headers, and data stealing techniques.</p>
+        </div>
+
+        <div class="module-box">
+            <div class="icon-circle">🔎</div>
+            <h3>Disinformation Detection</h3>
+            <p>Detect artificial narratives, state-sponsored campaigns, and media manipulation strategies in your daily media consumption.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

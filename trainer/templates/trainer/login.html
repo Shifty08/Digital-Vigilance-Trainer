@@ -1,0 +1,139 @@
+{% extends 'trainer/base.html' %}
+
+{% block content %}
+<style>
+    .auth-container {
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        min-height: 80vh; 
+    }
+
+    .auth-card {
+        background: white; 
+        width: 100%; 
+        max-width: 400px;
+        padding: 50px; 
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .auth-card h2 { 
+        text-align: center; 
+        margin-bottom: 30px; 
+        font-weight: 800; 
+        color: var(--text-dark); 
+    }
+
+    .form-group { 
+        margin-bottom: 20px; 
+    }
+
+    label { 
+        display: block; 
+        font-weight: 600; 
+        font-size: 0.9rem; 
+        margin-bottom: 8px; 
+        color: #64748b; 
+    }
+
+    input {
+        width: 100%; 
+        padding: 14px; 
+        border-radius: 12px;
+        border: 2px solid #f1f5f9; 
+        box-sizing: border-box;
+        transition: 0.3s; 
+        font-size: 1rem; 
+        outline: none;
+    }
+
+    input:focus { 
+        border-color: var(--grad-start); 
+        background: #fff; 
+        box-shadow: 0 0 0 4px rgba(125, 211, 252, 0.2);
+    }
+
+    .error-alert {
+        background: #fff1f2; 
+        color: #e11d48; 
+        padding: 12px; 
+        border-radius: 10px; 
+        margin-bottom: 20px; 
+        font-size: 0.85rem; 
+        text-align: center; 
+        border: 1px solid #ffe4e6;
+    }
+
+    .btn-login {
+        width: 100%; 
+        padding: 16px; 
+        border: none; 
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+        color: white; 
+        font-weight: 800; 
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+    }
+
+    .footer-link {
+        text-align: center; 
+        margin-top: 25px; 
+        font-size: 0.9rem; 
+        color: #64748b;
+    }
+
+    .footer-link a {
+        color: var(--grad-end); 
+        text-decoration: none; 
+        font-weight: bold;
+    }
+
+    .footer-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Welcome Back</h2>
+        
+        {% if error %}
+            <div class="error-alert">
+                Invalid username or password. Please try again.
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                Secure Login
+            </button>
+        </form>
+        
+        <div class="footer-link">
+            Don't have an account? <a href="{% url 'signup' %}">Sign up now</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

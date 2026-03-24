@@ -1,0 +1,201 @@
+{% extends 'trainer/base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --cyber-yellow: #facc15;
+        --active-amber: #f59e0b; 
+    }
+
+    
+    .leaderboard-wrapper {
+        max-width: 1100px;
+        margin: 60px auto;
+        padding: 0 20px;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    
+    .header-section {
+        margin-bottom: 50px;
+        border-left: 6px solid var(--cyber-yellow);
+        padding-left: 25px;
+    }
+
+    .header-section h2 {
+        font-size: 2.2rem;
+        font-weight: 900;
+        margin: 0;
+        color: var(--text-dark);
+        text-transform: uppercase;
+        letter-spacing: -1px;
+    }
+
+    .sector-info {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin-top: 5px;
+        font-weight: 600;
+    }
+
+    .active-sector-name {
+        color: #000;
+        background: var(--cyber-yellow);
+        padding: 2px 10px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        margin-left: 5px;
+        vertical-align: middle;
+    }
+
+    
+    .tabs {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .tab-link {
+        padding: 10px 24px;
+        background: white;
+        color: var(--text-muted);
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 0.85rem;
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .tab-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        color: var(--text-dark);
+    }
+
+    .tab-link.active {
+        background: var(--text-dark);
+        color: var(--cyber-yellow);
+        border-color: var(--text-dark);
+    }
+
+    .ranking-card {
+        background: white;
+        border-radius: 30px;
+        border: 1px solid rgba(0,0,0,0.05);
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .rank-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 150px;
+        padding: 25px 40px;
+        border-bottom: 1px solid #f1f5f9;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+
+    .rank-row:last-child {
+        border-bottom: none;
+    }
+
+    .rank-row:hover {
+        background: #f8fafc;
+    }
+
+    .rank-num {
+        font-size: 1.4rem;
+        font-weight: 900;
+        color: #cbd5e1;
+    }
+
+    .player-name {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        letter-spacing: -0.3px;
+    }
+
+    .player-score {
+        text-align: right;
+        color: var(--active-amber); 
+        font-size: 1.6rem;
+        font-weight: 900;
+    }
+
+    
+    .rank-1 {
+        background: #fffbeb; 
+    }
+
+    .rank-1 .rank-num {
+        color: var(--active-amber);
+    }
+
+    .you-badge {
+        font-size: 0.7rem;
+        background: #eff6ff;
+        color: #3b82f6;
+        padding: 4px 10px;
+        border-radius: 99px;
+        margin-left: 15px;
+        font-weight: 800;
+    }
+
+    .empty-msg {
+        padding: 60px;
+        text-align: center;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+</style>
+
+<div class="leaderboard-wrapper">
+    <div class="header-section">
+        <h2>Leaderboards</h2>
+        <div class="sector-info">
+            SECTOR: <span class="active-sector-name">{{ current_category|upper }}</span>
+        </div>
+    </div>
+
+    <div class="tabs">
+        {% for cat in categories %}
+            <a href="?category={{ cat }}" class="tab-link {% if cat == current_category %}active{% endif %}">
+                {{ cat }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="ranking-card">
+        {% for entry in top_scores %}
+            <div class="rank-row {% if forloop.counter == 1 %}rank-1{% endif %}">
+                
+                <div class="rank-num">
+                    {% if forloop.counter == 1 %}👑{% else %}{{ forloop.counter|stringformat:"02d" }}{% endif %}
+                </div>
+
+                <div class="player-name">
+                    {{ entry.user.username }}
+                    {% if entry.user == request.user %}
+                        <span class="you-badge">YOU</span>
+                    {% endif %}
+                </div>
+
+                <div class="player-score">
+                    {{ entry.score }} <small style="font-size: 0.8rem; opacity: 0.6;">pts</small>
+                </div>
+
+            </div>
+        {% empty %}
+            <div class="empty-msg">
+                No active data for this sector.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

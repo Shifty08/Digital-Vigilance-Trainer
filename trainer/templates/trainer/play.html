@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigilance Simulation</title>
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --deep-forest: #064e3b;
+            --danger-red: #e11d48;
+            --action-blue: #2563eb;
+            --text-light: #ecfdf5;
+        }
+
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: var(--deep-forest);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body {
+            background-image: radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 80%);
+            color: var(--text-light);
+            user-select: none;
+        }
+
+        .game-wrapper {
+            width: 98vw;
+            height: 98vh;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        
+        .hud-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .scenario-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 0;
+            color: white;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .timer-glow {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-top: -5px;
+            color: var(--primary-green);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-green);
+            width: 0%;
+            transition: width 0.6s ease;
+            box-shadow: 0 0 10px var(--primary-green);
+        }
+
+        
+        .simulation-deck {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        .scenario-description {
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #a7f3d0;
+            background: rgba(6, 78, 59, 0.5);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        
+        .image-stage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background: #000; 
+            overflow: hidden;
+        }
+
+        .scenario-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            
+            image-rendering: -webkit-optimize-contrast; 
+        }
+
+        
+        .action-footer {
+            padding: 15px;
+            background: rgba(2, 44, 34, 0.8);
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .action-btn {
+            padding: 25px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1.6rem;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            color: white;
+            transition: transform 0.1s, filter 0.1s;
+        }
+
+        .btn-safe { background: var(--action-blue); border-bottom: 5px solid #1e40af; }
+        .btn-danger { background: var(--danger-red); border-bottom: 5px solid #be123c; }
+
+        .action-btn:active { transform: translateY(3px); border-bottom: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="game-wrapper">
+        <div class="hud-header">
+            <h1 class="scenario-title">{{ scenario.title }}</h1>
+            <div class="timer-glow" id="clock">10</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="p-bar"></div>
+        </div>
+
+        <div class="simulation-deck">
+            <div class="scenario-description">
+                ROUND {{ round }}/10: {{ scenario.text }}
+            </div>
+
+            <div class="image-stage">
+                {% if scenario.image %}
+                    <img src="{{ scenario.image.url }}" class="scenario-image">
+                {% else %}
+                    <div style="color: #4b5563;">[ SIGNAL LOST: NO VISUAL DATA ]</div>
+                {% endif %}
+            </div>
+
+            <div class="action-footer">
+                <form id="sim-form" method="post" action="{% url 'play_game' category %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="scenario_id" value="{{ scenario.id }}">
+                    <input type="hidden" name="time_taken" id="time_taken" value="0">
+                    
+                    <div class="action-grid">
+                        <button type="submit" name="choice" value="Safe" class="action-btn btn-safe">
+                            {% if category == 'scam' %}REPLY{% elif category == 'phishing' %}CLICK{% else %}REAL{% endif %}
+                        </button>
+                        <button type="submit" name="choice" value="Danger" class="action-btn btn-danger">
+                            {% if category == 'scam' %}IGNORE{% elif category == 'phishing' %}DELETE{% else %}FAKE{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const currentRound = parseInt("{{ round }}");
+    document.getElementById('p-bar').style.width = (currentRound * 10) + '%';
+
+    const startTime = Date.now();
+    const form = document.getElementById('sim-form');
+    const clock = document.getElementById('clock');
+    let timeLeft = 10;
+    let submitted = false;
+
+    const countdown = setInterval(() => {
+        if (submitted) return; 
+
+        timeLeft--;
+        clock.textContent = timeLeft;
+        
+        if (timeLeft <= 3) clock.style.color = "#e11d48";
+        
+        if (timeLeft <= 0) {
+            submitted = true;
+            clearInterval(countdown);
+            
+            const duration = (Date.now() - startTime) / 1000;
+            document.getElementById('time_taken').value = duration.toFixed(2);
+            
+            
+            const timeoutInput = document.createElement('input');
+            timeoutInput.type = 'hidden';
+            timeoutInput.name = 'choice';
+            timeoutInput.value = 'Timeout';
+            form.appendChild(timeoutInput);
+            
+            form.submit();
+        }
+    }, 1000);
+
+    form.addEventListener('submit', () => {
+        submitted = true; 
+        const duration = (Date.now() - startTime) / 1000;
+        document.getElementById('time_taken').value = duration.toFixed(2);
+    });
+
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () { history.go(1); };
+</script>
+</body>
+</html>
