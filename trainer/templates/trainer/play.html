@@ -10,6 +10,7 @@
             --deep-forest: #064e3b;
             --danger-red: #e11d48;
             --action-blue: #2563eb;
+            --dto-amber: #d97706; /* Color for DTO button */
             --text-light: #ecfdf5;
         }
 
@@ -129,9 +130,9 @@
 
         .action-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 900px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -149,6 +150,8 @@
 
         .btn-safe { background: var(--action-blue); border-bottom: 5px solid #1e40af; }
         .btn-danger { background: var(--danger-red); border-bottom: 5px solid #be123c; }
+        .btn-dto { background: var(--dto-amber); border-bottom: 5px solid #b45309; }
+
 
         .action-btn:active { transform: translateY(3px); border-bottom: 0; }
     </style>
@@ -190,6 +193,10 @@
                         </button>
                         <button type="submit" name="choice" value="Danger" class="action-btn btn-danger">
                             {% if category == 'scam' %}IGNORE{% elif category == 'phishing' %}DELETE{% else %}FAKE{% endif %}
+                        </button>
+                        
+                        <button type="submit" name="choice" value="Report_DTO" class="action-btn btn-dto">
+                            REPORT DTO
                         </button>
                     </div>
                 </form>
