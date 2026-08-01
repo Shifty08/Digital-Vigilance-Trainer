@@ -135,3 +135,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent # This is your project root
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 LOGIN_URL = 'login'
+
+# Real Email Configuration (Gmail SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Replace these with your actual Gmail and the 16-character App Password from Step 1:
+EMAIL_HOST_USER = 'johnmichael.calleja@benilde.edu.ph'
+EMAIL_HOST_PASSWORD = 'prid xjbe gywe qmkf'  # Paste your 16-character App Password here (no spaces needed)
+
+DEFAULT_FROM_EMAIL = 'Digital Vigilance Security <johnmichael.calleja@benilde.edu.ph>'
+
+# Secret Key = 868e7fc7b547d7103f38e91c506dc1c0

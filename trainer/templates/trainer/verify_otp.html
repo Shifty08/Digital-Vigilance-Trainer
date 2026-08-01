@@ -1,0 +1,126 @@
+{% extends 'trainer/base.html' %}
+
+{% block content %}
+<style>
+    .mfa-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+
+    .mfa-card {
+        background: #022c22;
+        width: 100%;
+        max-width: 420px;
+        padding: 45px;
+        border-radius: 24px;
+        border: 2px solid rgba(16, 185, 129, 0.4);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        text-align: center;
+        color: white;
+    }
+
+    .mfa-badge {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: #34d399;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .mfa-card h2 {
+        margin: 0 0 15px 0;
+        font-size: 1.8rem;
+        font-weight: 900;
+    }
+
+    .mfa-card p {
+        color: #a7f3d0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 30px;
+    }
+
+    .otp-input {
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        border: 2px solid rgba(16, 185, 129, 0.4);
+        background: rgba(0, 0, 0, 0.4);
+        color: #34d399;
+        font-size: 1.8rem;
+        font-weight: 900;
+        text-align: center;
+        letter-spacing: 12px;
+        outline: none;
+        box-sizing: border-box;
+        margin-bottom: 25px;
+    }
+
+    .btn-verify {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        background: #10b981;
+        color: white;
+        font-size: 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-verify:hover {
+        background: #34d399;
+    }
+
+    .error-alert {
+        background: rgba(225, 29, 72, 0.2);
+        color: #f87171;
+        border: 1px solid #ef4444;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+</style>
+
+<div class="mfa-container">
+    <div class="mfa-card">
+        <div class="mfa-badge">SECURITY STEP 02 / MFA</div>
+        <h2>VERIFY YOUR EMAIL</h2>
+        <p>Agent <b>{{ username }}</b>, enter the 6-digit passcode sent to <b>{{ email }}</b>.</p>
+
+        {% if error %}
+            <div class="error-alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'verify_otp' %}">
+            {% csrf_token %}
+            <input type="text" 
+                   name="otp_code" 
+                   class="otp-input" 
+                   maxlength="6" 
+                   placeholder="000000" 
+                   required 
+                   autofocus 
+                   autocomplete="off">
+
+            <button type="submit" class="btn-verify">
+                Verify Passcode
+            </button>
+        </form>
+
+        <div style="margin-top: 25px;">
+            <a href="{% url 'login' %}" style="color: #64748b; font-size: 0.85rem; text-decoration: none;">
+                ← Cancel & Return to Login
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

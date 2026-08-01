@@ -9,7 +9,6 @@
         --active-amber: #f59e0b; 
     }
 
-    
     .leaderboard-wrapper {
         max-width: 1100px;
         margin: 60px auto;
@@ -17,9 +16,8 @@
         font-family: 'Inter', 'Segoe UI', sans-serif;
     }
 
-    
     .header-section {
-        margin-bottom: 50px;
+        margin-bottom: 30px;
         border-left: 6px solid var(--cyber-yellow);
         padding-left: 25px;
     }
@@ -35,26 +33,27 @@
 
     .sector-info {
         color: var(--text-muted);
-        font-size: 1.1rem;
+        font-size: 1rem;
         margin-top: 5px;
         font-weight: 600;
     }
 
-    .active-sector-name {
+    .active-badge {
         color: #000;
         background: var(--cyber-yellow);
         padding: 2px 10px;
         border-radius: 6px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin-left: 5px;
         vertical-align: middle;
+        font-weight: 800;
     }
 
-    
+    /* Primary Category Tabs */
     .tabs {
         display: flex;
         gap: 12px;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
         flex-wrap: wrap;
     }
 
@@ -72,8 +71,7 @@
     }
 
     .tab-link:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
         color: var(--text-dark);
     }
 
@@ -81,6 +79,35 @@
         background: var(--text-dark);
         color: var(--cyber-yellow);
         border-color: var(--text-dark);
+    }
+
+    /* Secondary Difficulty Sub-Tabs */
+    .difficulty-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 30px;
+    }
+
+    .diff-tab {
+        padding: 6px 16px;
+        background: #f1f5f9;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        transition: 0.2s ease;
+    }
+
+    .diff-tab:hover {
+        background: #e2e8f0;
+        color: var(--text-dark);
+    }
+
+    .diff-tab.active-diff {
+        background: #10b981;
+        color: white;
     }
 
     .ranking-card {
@@ -128,7 +155,6 @@
         font-weight: 900;
     }
 
-    
     .rank-1 {
         background: #fffbeb; 
     }
@@ -159,18 +185,32 @@
     <div class="header-section">
         <h2>Leaderboards</h2>
         <div class="sector-info">
-            SECTOR: <span class="active-sector-name">{{ current_category|upper }}</span>
+            SECTOR: <span class="active-badge">{{ current_category|upper }}</span>
+            DIFFICULTY: <span class="active-badge" style="background: #10b981; color: white;">{{ current_difficulty|upper }}</span>
         </div>
     </div>
 
+    <!-- Category Filter Tabs -->
     <div class="tabs">
         {% for cat in categories %}
-            <a href="?category={{ cat }}" class="tab-link {% if cat == current_category %}active{% endif %}">
+            <a href="?category={{ cat }}&difficulty={{ current_difficulty }}" 
+               class="tab-link {% if cat == current_category %}active{% endif %}">
                 {{ cat }}
             </a>
         {% endfor %}
     </div>
 
+    <!-- Difficulty Filter Sub-Tabs -->
+    <div class="difficulty-tabs">
+        {% for diff in difficulties %}
+            <a href="?category={{ current_category }}&difficulty={{ diff }}" 
+               class="diff-tab {% if diff == current_difficulty %}active-diff{% endif %}">
+                {{ diff }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Leaderboard Table -->
     <div class="ranking-card">
         {% for entry in top_scores %}
             <div class="rank-row {% if forloop.counter == 1 %}rank-1{% endif %}">
@@ -193,7 +233,7 @@
             </div>
         {% empty %}
             <div class="empty-msg">
-                No active data for this sector.
+                No scores recorded for this sector and difficulty yet.
             </div>
         {% endfor %}
     </div>

@@ -144,7 +144,7 @@
 
         <p class="control-hint">System Ready. Awaiting user confirmation...</p>
         
-        <a href="{% url 'play_game' category %}" class="btn-play">
+        <a href="{% url 'play_game_diff' category=category difficulty=difficulty %}" class="btn-play">
             I Understand. Let's Play.
         </a>
 

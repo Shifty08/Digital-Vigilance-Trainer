@@ -68,7 +68,6 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Right side: The Intel & Scores */
         .intel-pane {
             flex: 1;
             padding: 40px;
@@ -155,7 +154,7 @@
         </div>
 
         <div class="nav-footer">
-            <a href="{% url 'play_game' category %}" class="btn-next">Next Round</a>
+            <a href="{% url 'play_game_diff' category=category difficulty=difficulty %}" class="btn-next">Next Round</a>
         </div>
     </div>
 
@@ -166,7 +165,7 @@
     
     window.onpopstate = function () {
         history.go(1);
-    };
+    };re
 </script>
 
 </body>

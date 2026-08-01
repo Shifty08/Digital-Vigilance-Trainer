@@ -10,27 +10,41 @@
     input { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #f1f5f9; box-sizing: border-box; transition: 0.3s; font-size: 1rem; outline: none; }
     input:focus { border-color: #6366f1; background: #fff; }
 
-    
     .error-box { display: none; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 12px; padding: 12px; margin-top: 10px; align-items: center; gap: 10px; }
     .error-box.active { display: flex !important; }
     input.invalid-user { border-color: #ef4444 !important; background-color: #fffafb; }
     .error-box span { color: #ef4444; font-size: 0.85rem; font-weight: 600; }
 
-    
     .req-list { list-style: none; padding: 0; margin: 15px 0; font-size: 0.85rem; }
     .req-item { color: #94a3b8; margin-bottom: 5px; display: flex; align-items: center; transition: 0.3s; }
     .req-item::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; border: 2px solid #cbd5e1; margin-right: 10px; transition: 0.3s; }
-    
     
     .req-item.met { color: #10b981; font-weight: 600; }
     .req-item.met::before { background-color: #10b981; border-color: #10b981; }
 
     .btn-signup { width: 100%; padding: 16px; border: none; border-radius: 12px; background: #6366f1; color: white; font-weight: 800; cursor: not-allowed; opacity: 0.5; transition: 0.3s; }
+
+    .system-error-alert {
+        background: #fef2f2;
+        border: 1px solid #fca5a5;
+        color: #b91c1c;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+    }
 </style>
 
 <div class="auth-container">
     <div class="auth-card">
         <h2>Create Account</h2>
+
+        {% if error_msg %}
+            <div class="system-error-alert">{{ error_msg }}</div>
+        {% endif %}
+
         <form method="post" id="signupForm">
             {% csrf_token %}
             
@@ -38,7 +52,7 @@
                 <label>Username</label>
                 <input type="text" name="username" id="userIn" 
                        class="{% if username_taken %}invalid-user{% endif %}"
-                       value="{{ request.POST.username|default:'' }}" >
+                       value="{{ request.POST.username|default:'' }}" required autocomplete="off">
                 
                 <div id="user-taken-box" class="error-box {% if username_taken %}active{% endif %}">
                     <span>ID Tag already assigned to another operative.</span>
@@ -46,8 +60,13 @@
             </div>
 
             <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" id="emailIn" value="{{ request.POST.email|default:'' }}" required placeholder="agent@agency.gov">
+            </div>
+
+            <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="passIn" name="password">
+                <input type="password" id="passIn" name="password" required>
             </div>
 
             <ul class="req-list">
@@ -59,7 +78,7 @@
 
             <div class="form-group">
                 <label>Confirm Password</label>
-                <input type="password" id="confIn">
+                <input type="password" id="confIn" name="confirm_password" required>
             </div>
 
             <button type="submit" id="submitBtn" class="btn-signup" disabled>Initialize Account</button>
@@ -69,6 +88,7 @@
 
 <script>
     const userIn = document.getElementById('userIn');
+    const emailIn = document.getElementById('emailIn');
     const passIn = document.getElementById('passIn');
     const confIn = document.getElementById('confIn');
     const btn = document.getElementById('submitBtn');
@@ -93,24 +113,29 @@
 
         try {
             const response = await fetch(`/check-username/?username=${encodeURIComponent(val)}`);
-            const data = await response.json();
-            usernameAvailable = !data.is_taken;
-            errorBox.classList.toggle('active', data.is_taken);
-            userIn.classList.toggle('invalid-user', data.is_taken);
-        } catch (e) { console.error("Connection failed."); }
+            if (response.ok) {
+                const data = await response.json();
+                usernameAvailable = !data.is_taken;
+                errorBox.classList.toggle('active', data.is_taken);
+                userIn.classList.toggle('invalid-user', data.is_taken);
+            }
+        } catch (e) { 
+            console.log("Check username endpoint unavailable, proceeding."); 
+        }
         validate();
     }
 
     function validate() {
         const pVal = passIn.value;
         const cVal = confIn.value;
+        const eVal = emailIn.value.trim();
 
         const isLen = pVal.length >= 8;
         const hasNum = /\d/.test(pVal);
-        const hasSpec = /[!@#$%^&*(),.?":{}|<>_-]/.test(pVal);
+        const hasSpec = /[^\w\s]/.test(pVal); 
         const isMatch = (pVal === cVal) && cVal !== "" && pVal !== "";
+        const isEmailValid = eVal.includes('@') && eVal.includes('.');
 
-        // Toggle 'met' class for the circles
         lenReq.classList.toggle('met', isLen);
         numReq.classList.toggle('met', hasNum);
         specReq.classList.toggle('met', hasSpec);
@@ -118,7 +143,7 @@
 
         const isUserValid = userIn.value.length >= 3 && usernameAvailable;
         
-        if (isLen && hasNum && hasSpec && isMatch && isUserValid) {
+        if (isLen && hasNum && hasSpec && isMatch && isUserValid && isEmailValid) {
             btn.disabled = false;
             btn.style.opacity = "1";
             btn.style.cursor = "pointer";
@@ -129,8 +154,13 @@
         }
     }
 
-    userIn.addEventListener('input', checkUser);
-    passIn.addEventListener('input', validate);
-    confIn.addEventListener('input', validate);
+    ['input', 'change', 'keyup'].forEach(evt => {
+        userIn.addEventListener(evt, checkUser);
+        emailIn.addEventListener(evt, validate);
+        passIn.addEventListener(evt, validate);
+        confIn.addEventListener(evt, validate);
+    });
+
+    window.addEventListener('DOMContentLoaded', validate);
 </script>
 {% endblock %}

@@ -10,7 +10,7 @@
             --deep-forest: #064e3b;
             --danger-red: #e11d48;
             --action-blue: #2563eb;
-            --dto-amber: #d97706; /* Color for DTO button */
+            --dto-amber: #d97706; 
             --text-light: #ecfdf5;
         }
 
@@ -182,21 +182,21 @@
             </div>
 
             <div class="action-footer">
-                <form id="sim-form" method="post" action="{% url 'play_game' category %}">
+                <form id="sim-form" method="post" action="{% url 'play_game_diff' category difficulty %}">
                     {% csrf_token %}
                     <input type="hidden" name="scenario_id" value="{{ scenario.id }}">
                     <input type="hidden" name="time_taken" id="time_taken" value="0">
                     
                     <div class="action-grid">
                         <button type="submit" name="choice" value="Safe" class="action-btn btn-safe">
-                            {% if category == 'scam' %}REPLY{% elif category == 'phishing' %}CLICK{% else %}REAL{% endif %}
+                            {% if category == 'scam' %}REPLY/FOLLOW{% elif category == 'phishing' %}CLICK{% else %}REAL{% endif %}
                         </button>
                         <button type="submit" name="choice" value="Danger" class="action-btn btn-danger">
                             {% if category == 'scam' %}IGNORE{% elif category == 'phishing' %}DELETE{% else %}FAKE{% endif %}
                         </button>
                         
                         <button type="submit" name="choice" value="Report_DTO" class="action-btn btn-dto">
-                            REPORT DTO
+                            REPORT
                         </button>
                     </div>
                 </form>
