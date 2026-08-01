@@ -399,7 +399,7 @@ def index(request):
             'hard': is_difficulty_unlocked(request.user, cat, 'hard'),
         }
 
-    return render(request, 'trainer/landing.html', {
+    return render(request, 'trainer/home.html', {
         'unlock_status': unlock_status
     })
 
