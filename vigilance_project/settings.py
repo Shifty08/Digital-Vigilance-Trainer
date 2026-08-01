@@ -142,10 +142,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# Replace these with your actual Gmail and the 16-character App Password from Step 1:
-EMAIL_HOST_USER = 'johnmichael.calleja@benilde.edu.ph'
-EMAIL_HOST_PASSWORD = 'prid xjbe gywe qmkf'  # Paste your 16-character App Password here (no spaces needed)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'johnmichael.calleja@benilde.edu.ph')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'Ydgyoxipqwujxkuep')
 
-DEFAULT_FROM_EMAIL = 'Digital Vigilance Security <johnmichael.calleja@benilde.edu.ph>'
+DEFAULT_FROM_EMAIL = f'Digital Vigilance Security <{EMAIL_HOST_USER}>'
 
 # Secret Key = 868e7fc7b547d7103f38e91c506dc1c0
