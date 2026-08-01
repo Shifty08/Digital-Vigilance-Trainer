@@ -281,7 +281,7 @@ def play_game(request, category, difficulty='easy'):
             pace_note = "TIMEOUT: Vigilance requires a decision."
 
         elif choice_lower == 'report':
-            if is_malicious:
+            if not is_malicious: 
                 is_correct = True
                 is_optimal_report = True
                 pace_note = "OPTIMAL DEFENSE: Threat escalated to Security Operations!"
@@ -289,18 +289,16 @@ def play_game(request, category, difficulty='easy'):
                 is_correct = False
                 pace_note = "FALSE ALARM: Legitimate item reported to security."
 
-
         else:
             user_is_danger = choice_lower in ['danger', 'delete', 'ignore', 'fake']
             is_correct = (user_is_danger == is_malicious)
-
         round_score = 0
 
         if is_correct:
             difficulty_multipliers = {
-                'easy': 1.0,
+                'easy': 2.0,
                 'medium': 1.5,
-                'hard': 2.0
+                'hard': 1.0
             }
             diff_multiplier = difficulty_multipliers.get(difficulty, 1.0)
             base_points = 100 * diff_multiplier
