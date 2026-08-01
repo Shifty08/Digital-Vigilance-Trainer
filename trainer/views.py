@@ -281,7 +281,7 @@ def play_game(request, category, difficulty='easy'):
             pace_note = "TIMEOUT: Vigilance requires a decision."
 
         elif choice_lower == 'report':
-            if not is_malicious: 
+            if  is_malicious: 
                 is_correct = True
                 is_optimal_report = True
                 pace_note = "OPTIMAL DEFENSE: Threat escalated to Security Operations!"
