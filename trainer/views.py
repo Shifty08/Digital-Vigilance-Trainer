@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import models
-from .models import Scenario, GameResult
+from .models import Scenario, GameResult, UserProfile
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -13,7 +13,6 @@ from django.db.models import Max, Avg
 import random
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import UserProfile
 
 
 def signup(request):
@@ -184,14 +183,6 @@ def send_otp_to_email(request, email, username):
         print(f"\n[SMTP ERROR] Could not send email: {str(e)}")
         
         print(f"--> FALLBACK OTP FOR {username}: {otp_code}\n")
-    
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [email],
-        fail_silently=False,
-    )
 
 def user_logout(request):
     logout(request)
@@ -430,17 +421,10 @@ def round_result(request, category,  difficulty='easy'):
         'difficulty': difficulty,
     })
 
-def index(request):
-    if request.user.is_authenticated:
-        return render(request, 'trainer/home.html')
-    else:
-        return render(request, 'trainer/landing.html')
     
 def instructions(request, category, difficulty='easy'):
     return render(request, 'trainer/instructions.html', {'category': category, 'difficulty': difficulty})
 
-def module_select(request):
-    return render(request, 'trainer/module_select.html')
 
 def leaderboard(request):
     cat = request.GET.get('category', 'scam')

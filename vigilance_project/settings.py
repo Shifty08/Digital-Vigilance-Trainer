@@ -129,7 +129,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # settings.py
 import os
+from pathlib import Path
+
 BASE_DIR = Path(__file__).resolve().parent.parent # This is your project root
+
+SECRET_KEY = os.environ.get('SECRET_KEY', '868e7fc7b547d7103f38e91c506dc1c0')
 
 # This line now correctly points to C:\Users\YourName\...\vigilance_project\media
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -143,8 +147,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'johnmichael.calleja@benilde.edu.ph')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'Ydgyoxipqwujxkuep')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = f'Digital Vigilance Security <{EMAIL_HOST_USER}>'
-
-# Secret Key = 868e7fc7b547d7103f38e91c506dc1c0
+EMAIL_TIMEOUT = 5
