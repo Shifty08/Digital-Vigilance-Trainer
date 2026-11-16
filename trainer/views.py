@@ -10,9 +10,11 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max, Avg
-import random
+import random, csv
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 def signup(request):
@@ -21,7 +23,6 @@ def signup(request):
 
     if request.method == 'POST':
         user_id = request.POST.get('username')
-        email = request.POST.get('email')
         access_key = request.POST.get('password')
         
         if User.objects.filter(username__iexact=user_id).exists():
@@ -30,13 +31,9 @@ def signup(request):
             try:
                 request.session['pending_user'] = {
                     'username': user_id,
-                    'email': email,
                     'password': access_key,
                 }
-                
-                
-                send_otp_to_email(request, email=email, username=user_id)
-                
+                generate_simulated_otp(request, user_id)           
                 return redirect('verify_otp')
 
             except Exception as e:
@@ -59,7 +56,7 @@ def user_login(request):
             
             if profile.mfa_enabled:
                 request.session['mfa_user_id'] = user.id
-                send_otp_to_email(request, email=user.email, username=user.username)
+                generate_simulated_otp(request, user.username)
                 return redirect('verify_otp')
             else:
                 login(request, user)
@@ -109,7 +106,6 @@ def verify_otp(request):
                     print("OTP Match! Creating new user in DB...")
                     new_user = User.objects.create_user(
                         username=pending_user['username'],
-                        email=pending_user['email'],
                         password=pending_user['password']
                     )
                     UserProfile.objects.create(user=new_user, mfa_enabled=True)
@@ -155,34 +151,12 @@ def verify_otp(request):
         'email': display_email
     })
 
-def send_otp_to_email(request, email, username):
-    """Generates a 6-digit OTP, stores it in session, and emails it safely."""
+def generate_simulated_otp(request, username):
+    """Generates a 6-digit OTP and simulates it on-screen."""
     otp_code = str(random.randint(100000, 999999))
-    
-
     request.session['mfa_otp'] = otp_code
-    
-    subject = "OPERATIVE VERIFICATION: Your Security Passcode"
-    message = (
-        f"Agent {username},\n\n"
-        f"Your 6-digit One-Time Passcode for Digital Vigilance Trainer is: {otp_code}\n\n"
-        f"Enter this code on the verification screen to complete your account registration."
-    )
-    
-    try:
-
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-            fail_silently=False,
-        )
-        print(f"\n[SUCCESS] OTP {otp_code} sent to {email}")
-    except Exception as e:
-        print(f"\n[SMTP ERROR] Could not send email: {str(e)}")
-        
-        print(f"--> FALLBACK OTP FOR {username}: {otp_code}\n")
+    messages.info(request, f"INCOMING TRANSMISSION: Your security passcode is {otp_code}")
+    print(f"\n[SIMULATED OTP] Code {otp_code} generated for {username}\n")
 
 def user_logout(request):
     logout(request)
@@ -493,3 +467,26 @@ def profile(request):
         'categories': categories,
         'difficulties': difficulties,
     })
+
+@staff_member_required
+def export_results_csv(request):
+    """Exports all GameResults to a CSV file for capstone data analysis."""
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="vigilance_results_export.csv"'
+    
+    writer = csv.writer(response)
+    # Write the header row
+    writer.writerow(['Username', 'Category', 'Difficulty', 'Score'])
+    
+    # Get all results, newest first
+    results = GameResult.objects.all().order_by('-id')
+    
+    for result in results:
+        writer.writerow([
+            result.user.username,
+            result.category,
+            result.difficulty,
+            result.score,
+        ])
+        
+    return response
