@@ -244,7 +244,7 @@ def play_game(request, category, difficulty='easy'):
 
         current_scenario = get_object_or_404(Scenario, id=scenario_id)
 
-
+        
         choice_lower = user_choice.lower()
         is_correct = False
         pace_note = ""
@@ -257,7 +257,7 @@ def play_game(request, category, difficulty='easy'):
         }
         base_points = difficulty_base.get(difficulty, 100)
 
-        defensive_actions = ['ignore', 'delete', 'fake', 'report']
+        defensive_actions = ['report', 'threat']
 
 
         if user_choice == "Timeout" or choice_lower == "timeout":
@@ -270,7 +270,7 @@ def play_game(request, category, difficulty='easy'):
             
             if time_taken < 1.5:
                 round_score = int(base_points * 0.5)
-                pace_note = "TOO FAST:guessing detected. Slow down for full points!"
+                pace_note = "TOO FAST: System 1 guessing detected. Slow down for full points!"
             else:
                 time_penalty = int(time_taken) * 2
                 round_score = max(base_points - time_penalty, int(base_points * 0.7))
@@ -457,8 +457,10 @@ def export_results_csv(request):
     response['Content-Disposition'] = 'attachment; filename="vigilance_results_export.csv"'
     
     writer = csv.writer(response)
+    # Write the header row
     writer.writerow(['Username', 'Category', 'Difficulty', 'Score'])
     
+    # Get all results, newest first
     results = GameResult.objects.all().order_by('-id')
     
     for result in results:

@@ -133,7 +133,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SECRET_KEY = os.environ.get('SECRET_KEY', '868e7fc7b547d7103f38e91c506dc1c0')
 
-# This line now correctly points to C:\Users\YourName\...\vigilance_project\media
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 LOGIN_URL = 'login'

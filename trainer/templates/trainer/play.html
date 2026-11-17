@@ -181,31 +181,29 @@
                 {% endif %}
             </div>
 
-            <div class="action-footer">
-                <form id="sim-form" method="post" action="{% url 'play_game_diff' category difficulty %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="scenario_id" value="{{ scenario.id }}">
-                    <input type="hidden" name="time_taken" id="time_taken" value="0">
-                    
-                    <div class="action-grid">
-                        <!-- SAFE / VULNERABLE BUTTON -->
-                        <button type="submit" name="choice" 
-                                value="{% if category == 'scam' %}reply{% elif category == 'phishing' %}click{% else %}real{% endif %}" 
-                                class="action-btn btn-safe">
-                            {% if category == 'scam' %}REPLY/FOLLOW{% elif category == 'phishing' %}CLICK{% else %}REAL{% endif %}
-                        </button>
-                        
-                        <!-- DANGER / IGNORE BUTTON -->
-                        <button type="submit" name="choice" 
-                                value="{% if category == 'scam' %}ignore{% elif category == 'phishing' %}delete{% else %}fake{% endif %}" 
-                                class="action-btn btn-danger">
-                            {% if category == 'scam' %}IGNORE{% elif category == 'phishing' %}DELETE{% else %}FAKE{% endif %}
-                        </button>
-                        
-                        <!-- REPORT BUTTON -->
-                        <button type="submit" name="choice" value="report" class="action-btn btn-report">
-                            REPORT
-                        </button>
+                    <div class="action-footer">
+                        <form id="sim-form" method="post" action="{% url 'play_game_diff' category difficulty %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="scenario_id" value="{{ scenario.id }}">
+                            <input type="hidden" name="time_taken" id="time_taken" value="0">
+                            
+                            <div class="action-grid">
+                                <!-- NON-THREAT / SAFE BUTTON -->
+                                <button type="submit" name="choice" value="non_threat" class="action-btn btn-safe">
+                                    NON-THREAT / SAFE
+                                </button>
+                                
+                                <!-- THREAT BUTTON -->
+                                <button type="submit" name="choice" value="threat" class="action-btn btn-danger">
+                                    MARK AS THREAT
+                                </button>
+                                
+                                <!-- REPORT BUTTON -->
+                                <button type="submit" name="choice" value="report" class="action-btn btn-report">
+                                    REPORT
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </form>
             </div>

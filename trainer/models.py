@@ -27,13 +27,9 @@ class Scenario(models.Model):
         default='easy'
     )
     ACTION_CHOICES = [
+        ('threat', 'Threat'),
+        ('non_threat', 'Non-Threat'),
         ('report', 'Report'),
-        ('ignore', 'Ignore'),
-        ('delete', 'Delete'),
-        ('fake', 'Fake'),
-        ('real', 'Real'),
-        ('click', 'Click'),
-        ('reply', 'Reply'),
     ]
     optimal_action = models.CharField(
         max_length=20, 
