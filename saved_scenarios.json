@@ -5,11 +5,11 @@
     "fields": {
         "text": "LTO TEXT",
         "is_malicious": true,
-        "explanation": "This is malicious because the LTO does not send any text if you have any violations.\r\n\r\nIt is accessed only through their official website.\r\n\r\n(https://lto.gov.ph)",
+        "explanation": "This is malicious because the LTO does not send any text if you have any violations.\n\nIt is accessed only through their official website.\n\n(https://lto.gov.ph)",
         "image": "scenarios/LTO.png",
         "category": "scam",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "ignore"
     }
 },
 {
@@ -18,11 +18,11 @@
     "fields": {
         "text": "BPI Rewards",
         "is_malicious": true,
-        "explanation": "This is a Scam because the link is not an official link. \r\n\r\nThe only legitimate rewards page of BPI is in their official app.",
+        "explanation": "This is a Scam because the link is not an official link.\n\nThe only legitimate rewards page of BPI is in their official app.",
         "image": "scenarios/BPI_TEXT.png",
         "category": "scam",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "ignore"
     }
 },
 {
@@ -31,11 +31,11 @@
     "fields": {
         "text": "Transport Strike Suspension",
         "is_malicious": false,
-        "explanation": "This is not malicious because the page that made the post is the official GMA PAGE.\r\n\r\nAnd the link for their page is also their own page.",
+        "explanation": "This is not malicious because the page that made the post is the official GMA PAGE.\n\nAnd the link for their page is also their own page.",
         "image": "scenarios/GMA_Suspension.png",
         "category": "disinfo",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "real"
     }
 },
 {
@@ -44,11 +44,11 @@
     "fields": {
         "text": "NTC MESSAGE",
         "is_malicious": false,
-        "explanation": "This is legitimate because this is the official hotline for NTC \r\n\r\nAnd the text message is about awareness and not making you try and click the link",
+        "explanation": "This is legitimate because this is the official hotline for NTC\n\nAnd the text message is about awareness and not making you try and click the link",
         "image": "scenarios/NTC_message.png",
         "category": "scam",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "reply"
     }
 },
 {
@@ -57,11 +57,11 @@
     "fields": {
         "text": "DEPED SUSPENSION",
         "is_malicious": true,
-        "explanation": "This is fake. The page is not an official page of the DepEd \r\n\r\nAnd the link that they sent is not an official link because there is (-portal.v-awards.net)",
+        "explanation": "This is fake. The page is not an official page of the DepEd\n\nAnd the link that they sent is not an official link because there is (-portal.v-awards.net)",
         "image": "scenarios/DEPED_SUSPENSION.png",
         "category": "disinfo",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "report"
     }
 },
 {
@@ -74,7 +74,7 @@
         "image": "scenarios/Google_device_Check.png",
         "category": "phishing",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "click"
     }
 },
 {
@@ -83,11 +83,11 @@
     "fields": {
         "text": "Unusual Sign-in Activity Alert",
         "is_malicious": true,
-        "explanation": "The URL microsoftonline-verify.net looks official, but it is not microsoft.com. Scammers use these \"look-alike\" domains to steal your password. By also threatening to 'permanently delete' your files in 24 hours, they want you to panic so you don't notice the fake email address.",
+        "explanation": "The URL microsoftonline-verify.net looks official, but it is not microsoft.com. Scammers use these 'look-alike' domains to steal your password. By also threatening to 'permanently delete' your files in 24 hours, they want you to panic so you don't notice the fake email address.",
         "image": "scenarios/Microsoft_Security_team.png",
         "category": "phishing",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "report"
     }
 },
 {
@@ -96,11 +96,11 @@
     "fields": {
         "text": "Mandatory Employee Benefits Review",
         "is_malicious": true,
-        "explanation": "Look at the email address: hr-benefits-portal-ph.com. Scammers buy domains that look official but are not. The link also points to corporate-sso-login.com. This is a Credential Harvester. It is designed to look like a standard \"Single Sign-On\" page to steal your work email and password, giving the attacker access to the entire company network.\"",
+        "explanation": "Look at the email address: hr-benefits-portal-ph.com. Scammers buy domains that look official but are not. The link also points to corporate-sso-login.com. This is a Credential Harvester. It is designed to look like a standard 'Single Sign-On' page to steal your work email and password, giving the attacker access to the entire company network.",
         "image": "scenarios/HR_Review.png",
         "category": "phishing",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "report"
     }
 },
 {
@@ -109,11 +109,11 @@
     "fields": {
         "text": "Gcash Notification",
         "is_malicious": true,
-        "explanation": "3+ Red Flags\r\n1. Unverified Sender Number: The message comes from an unknown 11-digit mobile number (+63 999 123 4567) instead of the official, registered short-code for GCash (2882 or official GCash sender ID).\r\n2. Shortened / Obfuscated Link: Uses a third-party link shortener (bit.ly/gcash-sec-verify) to mask the destination domain instead of pointing to the official gcash.com.\r\n3. Informal Language & Text-Speak: Employs informal text-speak (UR account, Click here 2 verify) and repetitive phrasing, which legitimate financial institutions in the Philippines do not use in official alerts.\r\n4. Artificial Pressure & Fearmongering: Claims the account is restricted and threatens loss of funds to trick the user into panicking and clicking the link immediately.",
+        "explanation": "1. Unverified Sender Number: The message comes from an unknown 11-digit mobile number (+63 999 123 4567) instead of the official, registered short-code for GCash (2882 or official GCash sender ID).\n2. Shortened / Obfuscated Link: Uses a third-party link shortener (bit.ly/gcash-sec-verify) to mask the destination domain instead of pointing to the official gcash.com.\n3. Informal Language & Text-Speak: Employs informal text-speak (UR account, Click here 2 verify) and repetitive phrasing, which legitimate financial institutions in the Philippines do not use in official alerts.\n4. Artificial Pressure & Fearmongering: Claims the account is restricted and threatens loss of funds to trick the user into panicking and clicking the link immediately.",
         "image": "",
         "category": "scam",
         "difficulty": "easy",
-        "indicators": []
+        "optimal_action": "ignore"
     }
 }
 ]
