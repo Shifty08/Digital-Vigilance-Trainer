@@ -21,17 +21,20 @@ class Scenario(models.Model):
     image = models.ImageField(upload_to='scenarios/', blank=True, null=True) 
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES)
 
-    # NEW FIELDS:
     difficulty = models.CharField(
         max_length=10, 
         choices=DIFFICULTY_CHOICES, 
         default='easy'
     )
-    # Track the explicit red flags/hints for feedback and validation
-    indicators = models.JSONField(
-        default=list, 
-        blank=True, 
-        help_text="List of specific threat signs/red flags present in this scenario."
+    ACTION_CHOICES = [
+        ('report', 'Report'),
+        ('ignore', 'Ignore'),
+    ]
+    optimal_action = models.CharField(
+        max_length=20, 
+        choices=ACTION_CHOICES, 
+        default='report',
+        help_text="Is it better to report or ignore this specific scenario?"
     )
 
     def __str__(self):

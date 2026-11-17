@@ -188,13 +188,21 @@
                     <input type="hidden" name="time_taken" id="time_taken" value="0">
                     
                     <div class="action-grid">
-                        <button type="submit" name="choice" value="Safe" class="action-btn btn-safe">
+                        <!-- SAFE / VULNERABLE BUTTON -->
+                        <button type="submit" name="choice" 
+                                value="{% if category == 'scam' %}reply{% elif category == 'phishing' %}click{% else %}real{% endif %}" 
+                                class="action-btn btn-safe">
                             {% if category == 'scam' %}REPLY/FOLLOW{% elif category == 'phishing' %}CLICK{% else %}REAL{% endif %}
                         </button>
-                        <button type="submit" name="choice" value="Danger" class="action-btn btn-danger">
+                        
+                        <!-- DANGER / IGNORE BUTTON -->
+                        <button type="submit" name="choice" 
+                                value="{% if category == 'scam' %}ignore{% elif category == 'phishing' %}delete{% else %}fake{% endif %}" 
+                                class="action-btn btn-danger">
                             {% if category == 'scam' %}IGNORE{% elif category == 'phishing' %}DELETE{% else %}FAKE{% endif %}
                         </button>
                         
+                        <!-- REPORT BUTTON -->
                         <button type="submit" name="choice" value="report" class="action-btn btn-report">
                             REPORT
                         </button>

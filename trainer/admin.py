@@ -21,7 +21,7 @@ class ScenarioAdmin(admin.ModelAdmin):
             'fields': ('text', 'image', 'explanation')
         }),
         ('Classification & Threat Level', {
-            'fields': ('category', 'difficulty', 'is_malicious', 'indicators')
+            'fields': ('category', 'difficulty', 'is_malicious','optimal_action')
         }),
     )
 

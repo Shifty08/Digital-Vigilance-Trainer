@@ -163,20 +163,23 @@ def user_logout(request):
     return redirect('index')
 
 def is_difficulty_unlocked(user, category, difficulty):
-    if not user.is_authenticated:
-        return False
     if difficulty == 'easy':
         return True
-    if difficulty == 'medium':
-       
-        return GameResult.objects.filter(
-            user=user, category=category, difficulty='easy', score__gte=800
-        ).exists()
-    if difficulty == 'hard':
         
-        return GameResult.objects.filter(
-            user=user, category=category, difficulty='medium', score__gte=1100
-        ).exists()
+    best_easy_score = GameResult.objects.filter(
+        user=user, category=category, difficulty='easy'
+    ).aggregate(Max('score'))['score__max'] or 0
+
+    if difficulty == 'medium':
+        return best_easy_score >= 600
+
+    if difficulty == 'hard':
+        best_medium_score = GameResult.objects.filter(
+            user=user, category=category, difficulty='medium'
+        ).aggregate(Max('score'))['score__max'] or 0
+        
+        return best_medium_score >= 1200
+
     return False
 
 @login_required
@@ -200,7 +203,6 @@ def module_select(request):
 def play_game(request, category, difficulty='easy'):
 
     if not is_difficulty_unlocked(request.user, category, difficulty):
-    
         return redirect('module_select')
     
     if 'round' not in request.session:
@@ -210,7 +212,6 @@ def play_game(request, category, difficulty='easy'):
         request.session['seen_scenarios'] = []  
 
     current_round = request.session.get('round', 1)
-
 
     if current_round > 10:
         final_score = request.session.get('score', 0)
@@ -242,66 +243,49 @@ def play_game(request, category, difficulty='easy'):
             time_taken = 10.0
 
         current_scenario = get_object_or_404(Scenario, id=scenario_id)
-        is_malicious = current_scenario.is_malicious
 
-        is_correct = False
-        is_optimal_report = False
-        pace_note = ""
 
         choice_lower = user_choice.lower()
-
-        if user_choice == "Timeout":
-            is_correct = False
-            pace_note = "TIMEOUT: Vigilance requires a decision."
-
-        elif choice_lower == 'report':
-            if  is_malicious: 
-                is_correct = True
-                is_optimal_report = True
-                pace_note = "OPTIMAL DEFENSE: Threat escalated to Security Operations!"
-            else:
-                is_correct = False
-                pace_note = "FALSE ALARM: Legitimate item reported to security."
-
-        else:
-            user_is_danger = choice_lower in ['danger', 'delete', 'ignore', 'fake']
-            is_correct = (user_is_danger == is_malicious)
+        is_correct = False
+        pace_note = ""
         round_score = 0
 
-        if is_correct:
-            difficulty_multipliers = {
-                'easy': 2.0,
-                'medium': 1.5,
-                'hard': 1.0
-            }
-            diff_multiplier = difficulty_multipliers.get(difficulty, 1.0)
-            base_points = 100 * diff_multiplier
+        difficulty_base = {
+            'easy': 100,
+            'medium': 200,
+            'hard': 300
+        }
+        base_points = difficulty_base.get(difficulty, 100)
+
+        defensive_actions = ['ignore', 'delete', 'fake', 'report']
+
+
+        if user_choice == "Timeout" or choice_lower == "timeout":
+            is_correct = False
+            pace_note = "TIMEOUT: Vigilance requires a decision."
+            round_score = 0
+
+        elif choice_lower == current_scenario.optimal_action:
+            is_correct = True
             
             if time_taken < 1.5:
-                pace_multiplier = 0.5
-                if not is_optimal_report:
-                    pace_note = "TOO FAST: Precision requires observation."
-            elif 1.5 <= time_taken <= 4.0:
-                pace_multiplier = 1.5
-                if not is_optimal_report:
-                    pace_note = "ELITE: Perfect balance of speed and accuracy."
-            elif 4.0 < time_taken <= 7.0:
-                pace_multiplier = 1.0
-                if not is_optimal_report:
-                    pace_note = "SECURE: Good focus on the details."
+                round_score = int(base_points * 0.5)
+                pace_note = "TOO FAST:guessing detected. Slow down for full points!"
             else:
-                decay = (time_taken - 7) * 0.1
-                pace_multiplier = max(0.5, 1.0 - decay) 
-                if not is_optimal_report:
-                    pace_note = "CAUTION: Delayed response increases risk."
+                time_penalty = int(time_taken) * 2
+                round_score = max(base_points - time_penalty, int(base_points * 0.7))
+                pace_note = "OPTIMAL: Great balance of analysis and decision making."
 
-            report_bonus = 1.2 if is_optimal_report else 1.0
+        elif choice_lower in defensive_actions and current_scenario.is_malicious:
+            is_correct = True 
+            round_score = int(base_points * 0.4)
+            pace_note = f"SUB-OPTIMAL: Good reflex! But the BEST action was to {current_scenario.optimal_action.upper()}."
 
-            round_score = int(base_points * pace_multiplier * report_bonus)
         else:
-            if user_choice != "Timeout" and choice_lower != 'report':
-                pace_note = "BREACH: Incorrect assessment."
+            is_correct = False
             round_score = 0
+            pace_note = f"BREACH: Incorrect assessment. The best action was to {current_scenario.optimal_action.upper()}."
+
 
         request.session['score'] += round_score
         request.session['round'] += 1 
@@ -333,24 +317,22 @@ def play_game(request, category, difficulty='easy'):
             difficulty=difficulty
         ).exclude(id__in=seen_ids)
         
-        if not scenarios.exists() and not Scenario.objects.filter(category=category, difficulty=difficulty).exists():
-            scenarios = Scenario.objects.filter(category=category).exclude(id__in=seen_ids)
-            
+
         if not scenarios.exists():
             seen_ids = []
             request.session['seen_scenarios'] = []
             scenarios = Scenario.objects.filter(category=category, difficulty=difficulty)
+            
             if not scenarios.exists():
-                scenarios = Scenario.objects.filter(category=category)
-        
-        if not scenarios.exists():
-            return redirect('index')
-        
+                return redirect('index')
+
         scenario = random.choice(list(scenarios))
         
         request.session['current_scenario_id'] = scenario.id
         seen_ids.append(scenario.id)
         request.session['seen_scenarios'] = seen_ids
+        
+        request.session.modified = True 
     
     return render(request, 'trainer/play.html', {
         'scenario': scenario, 
@@ -475,10 +457,8 @@ def export_results_csv(request):
     response['Content-Disposition'] = 'attachment; filename="vigilance_results_export.csv"'
     
     writer = csv.writer(response)
-    # Write the header row
     writer.writerow(['Username', 'Category', 'Difficulty', 'Score'])
     
-    # Get all results, newest first
     results = GameResult.objects.all().order_by('-id')
     
     for result in results:
