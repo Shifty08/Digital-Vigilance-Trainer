@@ -120,20 +120,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-# Media files (Cloudinary)
-MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-SECRET_KEY = os.environ.get('SECRET_KEY', '868e7fc7b547d7103f38e91c506dc1c0')
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Media files (Cloudinary)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MEDIA_URL = '/media/'
+
+# Other Settings
 LOGIN_URL = 'login'
 DEFAULT_FROM_EMAIL = "Digital Vigilance Security <onboarding@resend.dev>"
