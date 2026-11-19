@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,6 +121,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
@@ -133,11 +135,14 @@ STORAGES = {
     },
 }
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-}
+cloudinary_url = os.environ.get('CLOUDINARY_URL')
+if cloudinary_url:
+    parsed = urlparse(cloudinary_url)
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': parsed.hostname,
+        'API_KEY': parsed.username,
+        'API_SECRET': parsed.password,
+    }
 
 # Other Settings
 LOGIN_URL = 'login'
