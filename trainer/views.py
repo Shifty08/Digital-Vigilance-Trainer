@@ -341,8 +341,10 @@ def play_game(request, category, difficulty='easy'):
         'difficulty': difficulty
     })
 
-@login_required
 def index(request):
+    if not request.user.is_authenticated:
+        return render(request, 'trainer/landing.html')
+
     categories = ['phishing', 'scam', 'disinfo']
     unlock_status = {}
 
